@@ -4,7 +4,7 @@ FROM docker.1ms.run/python:3.11-alpine AS running
 ENV LANG='en_US.UTF-8' \
     LANGUAGE='en_US.UTF-8' \
     TZ='Asia/Shanghai' \
-    PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
+    PIP_INDEX_URL=https://mirrors.cloud.tencent.com/pypi/simple/
 
 RUN \
     sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \

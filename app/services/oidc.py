@@ -9,8 +9,12 @@ from app.core.config import settings
 from .passport import PassportService
 from .token import TokenService
 from app.models.account import Account, AccountStatus
+from urllib3.exceptions import InsecureRequestWarning
+
 
 logger = logging.getLogger(__name__)
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class OIDCService:
     def __init__(self):
@@ -23,6 +27,8 @@ class OIDCService:
         self.tenant_id = settings.TENANT_ID
         self.passport_service = PassportService()
         self.token_service = TokenService()
+        self.access_token = None
+        self.login_id = None
         
         # 获取OIDC配置
         self._load_oidc_config()
@@ -75,7 +81,7 @@ class OIDCService:
         }
         get_token_url=f"{self.token_endpoint}?{urlencode(params)}"
 
-        response = requests.get(get_token_url)
+        response = requests.get(get_token_url, verify=False)
         if response.status_code != 200:
             logger.exception("获取token失败: status_code=%d, response=%s", 
                            response.status_code, response.text)
@@ -90,7 +96,7 @@ class OIDCService:
             'access_token': access_token
         }
         get_userinfo_url = f"{self.userinfo_endpoint}?{urlencode(params)}"
-        response = requests.get(get_userinfo_url)
+        response = requests.get(get_userinfo_url, verify=False)
 
         if response.status_code != 200:
             logger.exception("获取用户信息失败: status_code=%d, response=%s", 
@@ -103,6 +109,10 @@ class OIDCService:
         # 获取访问令牌
         token_response = self.get_token(code)
         access_token = token_response.get('access_token')
+        self.access_token = access_token
+        if not access_token:
+            logger.error("获取访问令牌失败，响应内容: %s", token_response)
+            raise Exception("Failed to get access token")
    
         # 获取用户信息
         user_info = self.get_user_info(access_token)
@@ -189,3 +199,30 @@ class OIDCService:
             "access_token": console_access_token,
             "refresh_token": refresh_token,
         }
+
+    def handle_logout(self, db: Session, login_id: str):
+        """处理登出"""
+        # 删除用户的refresh token
+        self.token_service.delete_refresh_token(login_id)
+
+        # 这里可以添加OIDC登出逻辑，如果OIDC提供了登出端点
+        # logout_url = f"{self.discovery_url}/logout?client_id={self.client_id}&post_logout_redirect_uri={self.redirect_uri}"
+        # return RedirectResponse(url=logout_url)
+
+        # 目前仅删除refresh token
+        logger.info("用户登出成功，已删除refresh token")
+        return {"message": "Logout successful"}
+
+    def get_user_info(self, access_token: str) -> Dict:
+        """通过access token获取用户信息"""
+        # The real request address is USERINFO_ENDPOINT
+        params = {
+            'access_token': self.access_token or access_token
+        }
+        get_userinfo_url = f"{self.userinfo_endpoint}?{urlencode(params)}" 
+        response = requests.get(get_userinfo_url, verify=False)
+        if response.status_code != 200:
+            logger.exception("获取用户信息失败: status_code=%d, response=%s", 
+                           response.status_code, response.text)
+            raise Exception("Failed to get user info")
+        return response.json()

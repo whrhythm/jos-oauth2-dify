@@ -1,5 +1,5 @@
 # ---- 运行环境 ----
-FROM docker.1ms.run/python:3.11-alpine AS running
+FROM python:3.11-alpine AS running
 
 ENV LANG='en_US.UTF-8' \
     LANGUAGE='en_US.UTF-8' \
@@ -20,8 +20,8 @@ WORKDIR /app
 
 # 下载依赖
 COPY requirements.txt .
-RUN --mount=type=cache,id=pip,target=/root/.cache \
-  pip install -r requirements.txt
+#RUN --mount=type=cache,id=pip,target=/root/.cache \
+RUN  pip install -r requirements.txt
 
 # 拷贝代码
 COPY . .

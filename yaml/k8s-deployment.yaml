@@ -20,7 +20,7 @@ data:
   OIDC_CLIENT_ID: '1746716309210222592'
   OIDC_CLIENT_SECRET: 'fa924d1252514b7f806cc4f0df2bfa5c'
   OIDC_DISCOVERY_URL: 
-  OIDC_REDIRECT_URI: 'https://dify-sso.joiningos.com/api/v1/enterprise/sso/oidc/callback'
+  OIDC_REDIRECT_URI: 'https://dify.joiningos.com:30001/api/v1/enterprise/sso/oidc/callback'
   OIDC_SCOPE: 'openid profile email'
   OIDC_RESPONSE_TYPE: 'code'
 
@@ -60,7 +60,7 @@ spec:
     spec:
       containers:
         - name: dify-sso
-          image: harbor.joiningos.com/library/dify-sso:1.0.0
+          image: harbor.joiningos.com/library/dify-sso:1.0.4
           ports:
             - name: api
               containerPort: 8000
@@ -161,7 +161,7 @@ spec:
               number: 8000
         path: /
         pathType: ImplementationSpecific
-  tls:
-  - hosts:
-    - dify-sso.joiningos.com
-    secretName: join-joiningos
+#  tls:
+#  - hosts:
+#    - dify-sso.joiningos.com
+#    secretName: join-joiningos

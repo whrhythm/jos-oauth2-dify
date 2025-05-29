@@ -38,8 +38,8 @@ data:
   REDIS_PASSWORD: 'difyai123456'
 
   AUTHORIZATION_ENDPOINT: 'https://sso-auth.joiningos.com:30001/sso/oauth2/authorize'
-  TOKEN_ENDPOINT: 'https://sso-auth.joiningos.com:30001/sso/oauth2/token'
-  USERINFO_ENDPOINT: 'https://sso-auth.joiningos.com:30001/sso/oauth2/userinfo'
+  TOKEN_ENDPOINT: 'https://sso-auth.joiningos.com:30001/sso/oauth2/token'                #可以改成http://<svc-name>.<namespace>:30001/sso/oauth2/token
+  USERINFO_ENDPOINT: 'https://sso-auth.joiningos.com:30001/sso/oauth2/userinfo'          #可以改成http://<svc-name>.<namespace>:30001/sso/oauth2/token
 
 ---
 apiVersion: apps/v1

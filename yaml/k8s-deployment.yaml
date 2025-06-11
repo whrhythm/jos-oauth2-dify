@@ -20,7 +20,7 @@ data:
   OIDC_CLIENT_ID: '1746716309210222592'
   OIDC_CLIENT_SECRET: 'fa924d1252514b7f806cc4f0df2bfa5c'
   OIDC_DISCOVERY_URL: 
-  OIDC_REDIRECT_URI: 'https://dify.joiningos.com:30001/api/v1/enterprise/sso/oidc/callback'
+  OIDC_REDIRECT_URI: 'https://dify.joiningos.com:30001/api/enterprise/sso/oidc/callback'
   OIDC_SCOPE: 'openid profile email'
   OIDC_RESPONSE_TYPE: 'code'
 
@@ -38,8 +38,8 @@ data:
   REDIS_PASSWORD: 'difyai123456'
 
   AUTHORIZATION_ENDPOINT: 'https://sso-auth.joiningos.com:30001/sso/oauth2/authorize'
-  TOKEN_ENDPOINT: 'https://sso-auth.joiningos.com:30001/sso/oauth2/token'                #可以改成http://<svc-name>.<namespace>:30001/sso/oauth2/token
-  USERINFO_ENDPOINT: 'https://sso-auth.joiningos.com:30001/sso/oauth2/userinfo'          #可以改成http://<svc-name>.<namespace>:30001/sso/oauth2/token
+  TOKEN_ENDPOINT: 'https://join-sso-server:8081/sso/oauth2/token'                #可以改成http://<svc-name>.<namespace>:30001/sso/oauth2/token
+  USERINFO_ENDPOINT: 'http://join-sso-server:8081/sso/oauth2/userinfo'          #可以改成http://<svc-name>.<namespace>:30001/sso/oauth2/token
 
 ---
 apiVersion: apps/v1

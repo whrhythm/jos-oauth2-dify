@@ -6,26 +6,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 DATABASE_URL = f"postgresql://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_DATABASE}"
-
-# 延迟 engine 绑定，避免初始化时报错
-engine = None
-SessionLocal = sessionmaker(autocommit=False, autoflush=False)
-
-def get_engine():
-    global engine
-    if engine is None:
-        try:
-            engine = create_engine(DATABASE_URL)
-        except Exception as e:
-            logger.exception("数据库引擎创建失败: %s", str(e))
-            raise
-    return engine
-
-def get_session():
-    return SessionLocal(bind=get_engine())
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
-    db = get_session()
+    db = SessionLocal()
     try:
         yield db
     finally:

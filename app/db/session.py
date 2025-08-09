@@ -23,4 +23,4 @@ def check_database_connection() -> bool:
         return True
     except Exception as e:
         logger.exception("数据库连接检查失败: %s", str(e))
-        return False 
+        return False

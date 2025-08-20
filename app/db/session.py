@@ -2,6 +2,10 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 import logging
+import threading
+
+# 每个请求独立 Session (线程局部变量)
+local_session = threading.local()
 
 logger = logging.getLogger(__name__)
 
@@ -10,11 +14,11 @@ engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_recycle=3600, pool
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
-    db = SessionLocal(bind=engine)
+    local_session.db = SessionLocal(bind=engine)
     try:
-        yield db
+        yield local_session.db
     finally:
-        db.close()
+        local_session.db.close()
 
 def check_database_connection() -> bool:
     try:
